@@ -1,0 +1,30 @@
+{
+  "name": "interviewbuddy",
+  "version": "1.0.0",
+  "description": "Discord bot to help to set up an interview between members.",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Andresrodart/InterviewBuddy.git"
+  },
+  "keywords": [
+    "Bot",
+    "Discord"
+  ],
+  "author": "Andrés Rodarte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Andresrodart/InterviewBuddy/issues"
+  },
+  "homepage": "https://github.com/Andresrodart/InterviewBuddy#readme",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "discord.js": "^12.5.1",
+    "mongodb": "^3.6.3",
+    "node-schedule": "^1.3.2",
+    "nodemailer": "^6.4.17"
+  }
+}
