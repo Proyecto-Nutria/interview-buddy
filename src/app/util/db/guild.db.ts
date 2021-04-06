@@ -9,6 +9,16 @@ class GuildHandler {
 		this.database = Singleton.getInstance();
   }
 
+	async getGuilds() {
+    try {
+      return await this.database.supabase
+        .from('guild_handle')
+        .select('*')
+    } catch(error) {
+      Logger.error(error);
+    }
+  }
+
 	async getGuild(guild_id: Snowflake) {
     try {
       return await this.database.supabase

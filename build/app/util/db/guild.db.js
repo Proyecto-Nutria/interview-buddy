@@ -9,6 +9,16 @@ class GuildHandler {
     constructor() {
         this.database = _1.Singleton.getInstance();
     }
+    async getGuilds() {
+        try {
+            return await this.database.supabase
+                .from('guild_handle')
+                .select('*');
+        }
+        catch (error) {
+            logger_1.default.error(error);
+        }
+    }
     async getGuild(guild_id) {
         try {
             return await this.database.supabase
