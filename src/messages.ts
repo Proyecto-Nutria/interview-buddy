@@ -1,4 +1,4 @@
-export const MESSAGES = 
+module.exports.MESSAGES = 
 {
     Interview_Buddy_Message: 
         `Hello my beloved otters, it is time to practice! 

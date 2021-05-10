@@ -1,20 +1,20 @@
 const MongoClient = require('mongodb').MongoClient;
-const client = MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true });
+const _mongoClient = MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true });
 
-export class DBHandler
+module.exports.DBHandler = class DBHandler
 {
     private db;
     private static instance: any;
 
 	private constructor()
     {
-		client.connect(err => 
+		_mongoClient.connect(err => 
         {
 		    if(err) throw err;
-			this.db = client.db('InterviewBuddy');
+			this.db = _mongoClient.db('InterviewBuddy');
 		});
 	}
-	
+
     getMail(user)
     {	
 		return this.db.collection('mails').findOne({id:user.id});
@@ -24,7 +24,7 @@ export class DBHandler
     {
 		return this.db.collection('mails').findOneAndUpdate({id:user.id}, {$set:user}, {upsert:true});
 	}
-	end(){client.close();}
+	end(){_mongoClient.close();}
 
     public static getInstance(): DBHandler 
     {

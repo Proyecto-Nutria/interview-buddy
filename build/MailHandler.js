@@ -12,7 +12,7 @@ let mailOptions = {
     subject: '',
     text: ''
 };
-export class MailHandler {
+module.exports.MailHandler = class MailHandler {
     constructor() { }
     sendMail({ to, subject, text }) {
         mailOptions.to = to;
@@ -27,4 +27,4 @@ export class MailHandler {
         return MailHandler.instance;
     }
     ;
-}
+};

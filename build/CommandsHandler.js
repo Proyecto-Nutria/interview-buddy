@@ -1,5 +1,5 @@
-import { COMMANDS } from './commandsWrapper';
-export class CommandsHandler {
+const { COMMANDS } = require('./commandsWrapper.js');
+module.exports.CommandsHandler = class CommandsHandler {
     constructor(bot) {
         this.bot = bot;
     }
@@ -12,4 +12,4 @@ export class CommandsHandler {
             CommandsHandler.instance = new CommandsHandler(bot);
         return CommandsHandler.instance;
     }
-}
+};

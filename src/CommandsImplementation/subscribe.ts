@@ -1,7 +1,6 @@
-import { Message } from "discord.js";
-import { DBHandler } from "../DBHandler";
+//const DBHandler = require("../DBHandler.js");
 
-export const SubscribeCommand = (message:Message, args:Array<string> = null) =>
+module.exports.SubscribeCommand = (message, args:Array<string> = null) =>
 {
     DBHandler
         .getInstance()

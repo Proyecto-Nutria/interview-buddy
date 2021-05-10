@@ -1,10 +1,11 @@
+//import { Message } from "discord.js";
 require('dotenv').config();
-import { MESSAGES } from './messages';
-import { MailHandler } from './MailHandler';
-import { CommandsHandler } from './CommandsHandler';
+const { MESSAGES } = require('./messages.js');
+const { MailHandler } = require('./MailHandler.js');
+const { CommandsHandler } = require('./CommandsHandler.js');
+const DBHandler = require('./DBHandler.js');
 const Discord = require('discord.js');
 const schedule = require('node-schedule');
-const db_handler = require('./db_handler');
 const textToImage = require('./textToImage');
 const client = new Discord.Client();
 const MailHandlerInstance = MailHandler.getInstance();
@@ -24,7 +25,7 @@ const sendWeekMessage = schedule.scheduleJob('46 20 * * 0-6', () => {
         .then(updateWeekMessage)
         .catch(console.error);
 });
-client.login(process.env.BOT_KEY);
+client.login(process.env.BOT_TOKEN).catch(err => console.error(err));
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.users
@@ -43,11 +44,12 @@ function updateWeekMessage(message) {
         .then((collected) => {
         collected.each(user => {
             user.users.cache.each(pushToOtterPool);
-            makePairs();
-            textToImage(weekOtterPairs).on('finish', () => {
-                client.channels.cache
-                    .get(channel)
-                    .send('These are the pairs of the week.\nPlease get in touch with your partner!', { files: ['./weekPairs.png'] });
+            makePairs().then(res => {
+                textToImage(weekOtterPairs).on('finish', () => {
+                    client.channels.cache
+                        .get(channel)
+                        .send('These are the pairs of the week.\nPlease get in touch with your partner!', { files: ['./weekPairs.png'] });
+                });
             });
         });
     })
@@ -59,13 +61,13 @@ function commandResolution(message) {
     CommandsHandlerInstance.execute(command, message, args);
 }
 function makePairs() {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         while (weekOtterPool.length > 0) {
             if (weekOtterPool.length === 1)
                 weekOtterPool.push({
-                    id: '689986627753476334',
-                    name: 'Andresrodart',
-                    discriminator: '4263',
+                    id: process.env.ANDRES_ID,
+                    name: process.env.ANDRES_NAME,
+                    discriminator: process.env.ANDRES_DESC
                 });
             let OtterOne, OtterTwo, index;
             index = Math.floor(Math.random() * weekOtterPool.length);
@@ -74,26 +76,21 @@ function makePairs() {
             index = Math.floor(Math.random() * weekOtterPool.length);
             OtterTwo = weekOtterPool[index];
             weekOtterPool.splice(index, 1);
-            client.users
+            await client.users
                 .fetch(OtterOne.id)
-                .then((user) => user.send(pairMessageMaker(OtterOne, OtterTwo)))
+                .then(user => user.send(pairMessageMaker(OtterOne, OtterTwo)))
                 .catch(console.error);
-            client.users
+            await client.users
                 .fetch(OtterTwo.id)
-                .then((user) => user.send(pairMessageMaker(OtterTwo, OtterOne)))
+                .then(user => user.send(pairMessageMaker(OtterTwo, OtterOne)))
                 .catch(console.error);
             weekOtterPairs.push({ otterOne: OtterOne, otterTwo: OtterTwo });
         }
-        // Llamamos a resolve(...) cuando lo que estabamos haciendo finaliza con éxito, y reject(...) cuando falla.
-        // En este ejemplo, usamos setTimeout(...) para simular código asíncrono.
-        // En la vida real, probablemente uses algo como XHR o una API HTML5.
-        setTimeout(function () {
-            resolve("¡Éxito!"); // ¡Todo salió bien!
-        }, 250);
+        resolve(true);
     });
 }
 function pairMessageMaker(to, pair) {
-    db_handler.getMail(to).then((result) => {
+    DBHandler.getInstance().getMail(to).then((result) => {
         if (result)
             MailHandlerInstance.sendMail({
                 to: result.mail,

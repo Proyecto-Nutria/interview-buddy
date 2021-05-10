@@ -1,5 +1,5 @@
-import { DBHandler } from "../DBHandler";
-export const SubscribeCommand = (message, args = null) => {
+//const DBHandler = require("../DBHandler.js");
+module.exports.SubscribeCommand = (message, args = null) => {
     DBHandler
         .getInstance()
         .setMail({ id: message.author.id, mail: args[0] })

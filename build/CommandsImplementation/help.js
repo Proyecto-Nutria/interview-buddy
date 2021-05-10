@@ -12,6 +12,6 @@ const HelpCommandRes = {
         }
     ],
 };
-export const HelpCommand = (message, args = null) => {
+module.exports.HelpCommand = (message, args = null) => {
     message.reply({ embed: HelpCommandRes });
 };

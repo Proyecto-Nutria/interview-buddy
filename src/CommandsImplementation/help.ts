@@ -1,5 +1,3 @@
-import { Message } from "discord.js";
-
 const HelpCommandRes = 
 {
     title: 'Interview Buddy Manual',
@@ -17,7 +15,7 @@ const HelpCommandRes =
     ],
 };
 
-export const HelpCommand = (message:Message, args:Array<string> = null) => 
+module.exports.HelpCommand = (message, args:Array<string> = null) => 
 {
     message.reply({ embed: HelpCommandRes });
 }

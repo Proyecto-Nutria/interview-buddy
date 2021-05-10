@@ -1,6 +1,7 @@
-import { HelpCommand } from './CommandsImplementation/help';
-import { SubscribeCommand } from './CommandsImplementation/subscribe';
-export const COMMANDS = {
-    help: HelpCommand,
-    subscribe: SubscribeCommand
-};
+const { HelpCommand } = require('./CommandsImplementation/help.js');
+const { SubscribeCommand } = require('./CommandsImplementation/subscribe.js');
+module.exports.COMMANDS =
+    {
+        help: HelpCommand,
+        subscribe: SubscribeCommand
+    };
