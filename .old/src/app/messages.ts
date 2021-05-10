@@ -12,13 +12,9 @@ export type MessagePayloadType = {
   readonly channel: string;
 };
 
-export const adaptMessage = (
-  message: DiscordMessageType,
-  channelName: string,
-): MessagePayloadType => {
-  const [command, ...args] = message.content
-    .split(' ')
-    .map((token) => token.toLowerCase());
+export const adaptMessage = (  message: DiscordMessageType, channelName: string,): MessagePayloadType => {
+  const [command, ...args] = message.content.split(' ')
+  .map((token) => token.toLowerCase());
 
   return {
     command: command.substring(1),

@@ -2,6 +2,7 @@ import { MessagePayloadType } from './../messages';
 import Constants from './../../constants';
 import Logger from '../util/logger';
 import { errorCommandText } from './../util/auxiliary';
+import { resolve } from 'node:path';
 
 const email_service = require('./../util/mail')
 

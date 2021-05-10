@@ -111,32 +111,32 @@ const help = (commandPrefix: string): Object => {
 
 /** Execute the command. */
 export default async function echo(payload: MessagePayloadType) {
-  if (!isAdmin(payload.source)) {
-    await payload.source.reply(`You're not allowed to execute this command.`);
-  } else if (payload.args[0] === 'help') {
-    await payload.source.member?.send({embed:help(payload.command)});
-  } else if (payload.args === undefined || payload.args.length === 0) {
-    await payload.source.reply(errorCommandText(payload.command));
-  }else {
-    const arg = payload.args[0];
-    if (arg === "start" && payload.args.length > 1) {
-      sendWeekMessageJob?.cancel();
-      const channel_text = payload.args[1];
-      const channel = isValidChannel(channel_text) ? 
-        payload.source.guild?.channels.cache.get(channel_text.replace(/\D/g,''))
-        : undefined;
-      const day = payload.args.length === 3 ? parseInt(payload.args[2], 10) as number : 2 as number;
-      const user = payload.source.author.id;
+  	if (!isAdmin(payload.source)) {
+    	payload.source.reply(`You're not allowed to execute this command.`);
+  	} else if (payload.args[0] === 'help') {
+    	await payload.source.member?.send({embed:help(payload.command)});
+  	} else if (payload.args === undefined || payload.args.length === 0) {
+    	await payload.source.reply(errorCommandText(payload.command));
+  	}else {
+		const arg = payload.args[0];
+		if (arg === "start" && payload.args.length > 1) {
+		sendWeekMessageJob?.cancel();
+		const channel_text = payload.args[1];
+		const channel = isValidChannel(channel_text) ? 
+			payload.source.guild?.channels.cache.get(channel_text.replace(/\D/g,''))
+			: undefined;
+		const day = payload.args.length === 3 ? parseInt(payload.args[2], 10) as number : 2 as number;
+		const user = payload.source.author.id;
 
-      if(!(channel?.isText) || isNaN(day) || 0 > day || day > 7) {
-        return;
-      }
-      const emoji = await payload.source.reply(getEmojiMessage).then(getEmojiReaction.bind(null, user));
-      sendWeekMessageJob = getSendWeekMessageJob(channel as TextChannel, emoji, day);
-    } else if (arg === "stop" && sendWeekMessageJob) {
-      sendWeekMessageJob.cancel();
-      sendWeekMessageJob = undefined;
-      payload.source.reply("The `interview_match` activity is stopped now!");
-    }
+		if(!(channel?.isText) || isNaN(day) || 0 > day || day > 7) {
+			return;
+		}
+		const emoji = await payload.source.reply(getEmojiMessage).then(getEmojiReaction.bind(null, user));
+		sendWeekMessageJob = getSendWeekMessageJob(channel as TextChannel, emoji, day);
+		} else if (arg === "stop" && sendWeekMessageJob) {
+		sendWeekMessageJob.cancel();
+		sendWeekMessageJob = undefined;
+		payload.source.reply("The `interview_match` activity is stopped now!");
+		}
   }
 }
