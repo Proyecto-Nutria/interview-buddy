@@ -4,6 +4,7 @@
         "target": "ES2017",
         "outDir": "./build",
         "rootDir": "./src",
-        "moduleResolution": "Node"       
+        "moduleResolution": "Node"  ,
+        "module": "commonjs"     
     }
 }

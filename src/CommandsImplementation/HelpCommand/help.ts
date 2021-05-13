@@ -1,3 +1,5 @@
+import { Message } from "discord.js";
+
 const HelpCommandRes = 
 {
     title: 'Interview Buddy Manual',
@@ -11,11 +13,15 @@ const HelpCommandRes =
         {
             name: '\>subscribe @mail',
             value: 'Subscribe to mail service',
+        },
+        {
+            name: '\>buddy [option]',
+            value: 'start buddy interview activity',
         }
     ],
 };
 
-module.exports.HelpCommand = (message, args:Array<string> = null) => 
+export default (message:Message, args:Array<string> = null) => 
 {
     message.reply({ embed: HelpCommandRes });
 }

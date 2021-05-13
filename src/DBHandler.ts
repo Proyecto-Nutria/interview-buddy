@@ -1,7 +1,7 @@
 const MongoClient = require('mongodb').MongoClient;
 const _mongoClient = MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true });
 
-module.exports.DBHandler = class DBHandler
+export default class DBHandler
 {
     private db;
     private static instance: any;

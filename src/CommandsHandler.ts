@@ -1,6 +1,7 @@
-const { COMMANDS } = require ('./commandsWrapper.js');
+import { Message } from 'discord.js';
+import COMMANDS from './commandsWrapper';
 
-module.exports.CommandsHandler = class CommandsHandler 
+export default class CommandsHandler 
 {
 	private bot: Object;
 	private static instance: CommandsHandler;
@@ -10,7 +11,7 @@ module.exports.CommandsHandler = class CommandsHandler
 		this.bot = bot;
 	}
 
-	public execute(command:string, message, args:Array<string> = null)
+	public execute(command:string, message:Message, args:Array<string> = null)
     {
         COMMANDS[command](message, args);
     };

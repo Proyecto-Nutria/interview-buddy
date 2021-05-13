@@ -17,7 +17,7 @@ let mailOptions =
   	text: ''
 };
 
-module.exports.MailHandler = class MailHandler 
+export default class MailHandler 
 {
     private static instance: MailHandler;
     private constructor() { }

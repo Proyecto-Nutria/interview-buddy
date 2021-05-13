@@ -1,6 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const MongoClient = require('mongodb').MongoClient;
 const _mongoClient = MongoClient(process.env.MONGO_URI, { useUnifiedTopology: true });
-module.exports.DBHandler = class DBHandler {
+class DBHandler {
     constructor() {
         _mongoClient.connect(err => {
             if (err)
@@ -20,4 +22,5 @@ module.exports.DBHandler = class DBHandler {
             DBHandler.instance = new DBHandler();
         return DBHandler.instance;
     }
-};
+}
+exports.default = DBHandler;

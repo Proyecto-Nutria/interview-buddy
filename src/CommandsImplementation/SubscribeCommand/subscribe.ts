@@ -1,11 +1,11 @@
-//const DBHandler = require("../DBHandler.js");
+import DBHandler from  "../../DBHandler";
 
-module.exports.SubscribeCommand = (message, args:Array<string> = null) =>
+export default (message, args:Array<string> = null) =>
 {
     DBHandler
         .getInstance()
         .setMail({ id: message.author.id, mail: args[0] })
-        .then((result) => {
+        .then(result => {
             message.reply(
                 `Hey ${message.author.username} your command was successfully executed`
             );

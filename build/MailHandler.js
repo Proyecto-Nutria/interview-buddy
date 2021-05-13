@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -12,7 +14,7 @@ let mailOptions = {
     subject: '',
     text: ''
 };
-module.exports.MailHandler = class MailHandler {
+class MailHandler {
     constructor() { }
     sendMail({ to, subject, text }) {
         mailOptions.to = to;
@@ -27,4 +29,5 @@ module.exports.MailHandler = class MailHandler {
         return MailHandler.instance;
     }
     ;
-};
+}
+exports.default = MailHandler;

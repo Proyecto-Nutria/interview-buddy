@@ -1,4 +1,4 @@
-module.exports.MESSAGES = 
+export default 
 {
     Interview_Buddy_Message: 
         `Hello my beloved otters, it is time to practice! 
