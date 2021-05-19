@@ -14,6 +14,7 @@ const Environment = {
   AdminRole: process.env.ADMIN_ROLE ?? 'Admin',
   WelcomeChannel: process.env.WELCOME_CHANNEL ?? '',
   WelcomeMessages: process.env.WELCOME_MESSAGES?.split(',') ?? [],
+  Server: process.env.SERVER ?? '',
 };
 
 export default Environment;

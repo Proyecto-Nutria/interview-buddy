@@ -12,6 +12,8 @@ const constants_1 = __importDefault(require("./../constants"));
 const db_handler = require('./util/db/guild.db');
 let discordClient;
 exports.discordClient = discordClient;
+const intents = new discord_js_1.Intents(discord_js_1.Intents.NON_PRIVILEGED);
+intents.add('GUILD_MEMBERS');
 async function run() {
     const isProd = environment_1.default.Playground === 'production';
     const userRole = new Map();
@@ -19,6 +21,7 @@ async function run() {
         throw new Error('Unable to locate Discord token');
     }
     exports.discordClient = discordClient = new discord_js_1.Client({
+        ws: { intents: intents },
         presence: {
             activity: {
                 name: `${constants_1.default.Prefix}help`,
@@ -31,30 +34,51 @@ async function run() {
         .then(() => logger_1.default.info('nutria-bot is now running!'))
         .catch(logger_1.default.error);
     discordClient.on('ready', async () => {
-        if (environment_1.default.WelcomeChannel === '' || !discordClient.channels.cache.get(environment_1.default.WelcomeChannel)?.isText)
-            return;
-        const channel = discordClient.channels.cache.get(environment_1.default.WelcomeChannel);
-        environment_1.default.WelcomeMessages.map(welcome_message => {
-            channel.messages.fetch(welcome_message).then(m => {
-                console.log(`Cached reaction message ${welcome_message}`);
-            }).catch(e => {
-                console.error("Error loading message", e);
-            });
-        });
-        db_handler.getGuilds().then(({ data }) => {
-            data.map(data_guild => {
-                const guild = discordClient.guilds.cache.get(data_guild.guild_id);
-                if (!guild)
-                    return;
-                const user_role = guild.roles.cache.find(r => r.name === environment_1.default.UserRole);
-                if (user_role) {
-                    logger_1.default.info(`Role ${user_role.name}:${user_role.id} added to guild ${guild.name}:${guild.id}`);
-                    userRole.set(data_guild.guild_id, user_role);
+        const guild = discordClient.guilds.cache.get(environment_1.default.Server);
+        const channels = guild?.channels.cache.filter(value => value.type == "text").map(value => value);
+        const references = {};
+        guild?.members.fetch().then(membersFetched => {
+            const members = membersFetched.map(value => ({ id: value.user.id, name: value.user.username }));
+            members?.forEach(value => references[value.id] = { name: value.name, messages: 0, reactions: 0 });
+            channels?.forEach(async (channel) => {
+                if (channel.id !== '796600473339035660') {
+                    let last_id;
+                    while (true) {
+                        const options = { limit: 100 };
+                        if (last_id) {
+                            options.before = last_id;
+                        }
+                        const messages = await channel.messages.fetch(options);
+                        /* @ts-ignore */
+                        messages?.forEach(async (message) => {
+                            /* @ts-ignore */
+                            message.reactions.cache.forEach(reaction => reaction.users.fetch().then(users => users.forEach(user => {
+                                if (references.hasOwnProperty(user.id)) {
+                                    references[user.id].reactions += 1;
+                                }
+                                else {
+                                    logger_1.default.info(`Error with ${user.name} - ${user.id}`);
+                                }
+                            })));
+                        });
+                        /* @ts-ignore */
+                        members?.forEach(member => { references[member.id].messages += messages.filter(m => m.author.id === member.id).size; });
+                        /* @ts-ignore */
+                        if (messages.size !== 100) {
+                            break;
+                        }
+                    }
                 }
-                else
-                    logger_1.default.error('Not user role present');
             });
         });
+        const delay = (ms) => new Promise(res => setTimeout(res, ms));
+        await delay(300000);
+        logger_1.default.info(references);
+        logger_1.default.info(Object.values(references).filter(ref => ref.messages > 0 || ref.reactions > 0));
+        logger_1.default.info(Object.values(references).filter(ref => ref.messages > 0 || ref.reactions > 0).length);
+        logger_1.default.info(references['481270533506465803'].messages);
+        logger_1.default.info(references['481270533506465803'].reactions);
+        /* members?.forEach(value => Logger.info(value.user.username)); */
     });
     discordClient.on('guildCreate', async (guild) => {
         logger_1.default.info(`Guild ${guild.name} added`);
